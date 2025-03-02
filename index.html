@@ -22,9 +22,6 @@
         th {
             background-color: #f4f4f4;
         }
-        b {
-            font-weight: bold;
-        }
         button {
             margin: 10px 0;
             padding: 10px;
@@ -32,13 +29,30 @@
         }
         textarea {
             width: 100%;
-            height: 100px;
+            height: 120px;
             margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <h2>Tabela Saldo</h2>
+    <h2>Valor do Sinal</h2>
+    <table>
+        <tr><td><b>Pix:</b></td><td><input type="text" id="pixSinal"></td></tr>
+        <tr><td>Nome do Cliente:</td><td><input type="text" id="clienteSinal"></td></tr>
+        <tr><td>Nome de Terceiros:</td><td><input type="text" id="terceirosSinal"></td></tr>
+        <tr><td>Captador:</td><td><input type="text" id="captadorSinal"></td></tr>
+        <tr><td>Carro:</td><td><input type="text" id="carroSinal"></td></tr>
+        <tr><td>Placa:</td><td><input type="text" id="placaSinal"></td></tr>
+        <tr><td>Valor da COMPRA:</td><td><input type="number" id="compraSinal"></td></tr>
+        <tr><td>Débitos:</td><td><input type="number" id="debitosSinal"></td></tr>
+        <tr><td>Valor da Quitação:</td><td><input type="number" id="quitacaoSinal"></td></tr>
+        <tr><td><b>Valor do Sinal:</b></td><td><input type="number" id="valorSinal"></td></tr>
+    </table>
+    <button onclick="gerarRelatorioSinal()">Gerar Relatório Sinal</button>
+    <button onclick="copiarRelatorio('relatorioSinal')">Copiar Relatório</button>
+    <textarea id="relatorioSinal" readonly></textarea>
+    
+    <h2>Pagamento Total</h2>
     <table>
         <tr><td><b>Pix:</b></td><td><input type="text" id="pixSaldo"></td></tr>
         <tr><td>Nome do Cliente:</td><td><input type="text" id="clienteSaldo"></td></tr>
@@ -49,81 +63,53 @@
         <tr><td>Valor da COMPRA:</td><td><input type="number" id="compraSaldo" oninput="calcularSaldo()"></td></tr>
         <tr><td>Débitos:</td><td><input type="number" id="debitosSaldo" oninput="calcularSaldo()"></td></tr>
         <tr><td>Valor da Quitação:</td><td><input type="number" id="quitacaoSaldo" oninput="calcularSaldo()"></td></tr>
-        <tr><td><b>Valor do Saldo:</b></td><td><b id="saldoValor">R$ 0,00</b></td></tr>
+        <tr><td>Valor do Sinal:</td><td><input type="number" id="sinalSaldo" oninput="calcularSaldo()"></td></tr>
+        <tr><td><b>Pagamento Total:</b></td><td><b id="saldoValor">R$ 0,00</b></td></tr>
     </table>
     <button onclick="gerarRelatorioSaldo()">Gerar Relatório Saldo</button>
-    <button onclick="copiarRelatorio('relatorioSaldo')">Copiar Relatório Saldo</button>
+    <button onclick="copiarRelatorio('relatorioSaldo')">Copiar Relatório</button>
     <textarea id="relatorioSaldo" readonly></textarea>
-    
-    <h2>Tabela Sinal</h2>
-    <table>
-        <tr><td><b>Pix:</b></td><td><input type="text" id="pixSinal"></td></tr>
-        <tr><td>Nome do Cliente:</td><td><input type="text" id="clienteSinal"></td></tr>
-        <tr><td>Nome de Terceiros:</td><td><input type="text" id="terceirosSinal"></td></tr>
-        <tr><td>Captador:</td><td><input type="text" id="captadorSinal"></td></tr>
-        <tr><td>Carro:</td><td><input type="text" id="carroSinal"></td></tr>
-        <tr><td>Placa:</td><td><input type="text" id="placaSinal"></td></tr>
-        <tr><td>Valor da COMPRA:</td><td><input type="number" id="compraSinal" oninput="calcularSinal()"></td></tr>
-        <tr><td>Débitos:</td><td><input type="number" id="debitosSinal" oninput="calcularSinal()"></td></tr>
-        <tr><td>Valor da Quitação:</td><td><input type="number" id="quitacaoSinal" oninput="calcularSinal()"></td></tr>
-        <tr><td>Valor do Sinal:</td><td><input type="number" id="valorSinal" oninput="calcularSinal()"></td></tr>
-        <tr><td><b>Valor Total:</b></td><td><b id="sinalValor">R$ 0,00</b></td></tr>
-    </table>
-    <button onclick="gerarRelatorioSinal()">Gerar Relatório Sinal</button>
-    <button onclick="copiarRelatorio('relatorioSinal')">Copiar Relatório Sinal</button>
-    <textarea id="relatorioSinal" readonly></textarea>
 
     <script>
         function calcularSaldo() {
             let compra = parseFloat(document.getElementById('compraSaldo').value) || 0;
             let debitos = parseFloat(document.getElementById('debitosSaldo').value) || 0;
             let quitacao = parseFloat(document.getElementById('quitacaoSaldo').value) || 0;
-            let saldo = compra - (debitos + quitacao);
+            let sinal = parseFloat(document.getElementById('sinalSaldo').value) || 0;
+            let saldo = compra - (debitos + quitacao + sinal);
             document.getElementById('saldoValor').innerText = `R$ ${saldo.toFixed(2)}`;
-        }
-        
-        function calcularSinal() {
-            let compra = parseFloat(document.getElementById('compraSinal').value) || 0;
-            let debitos = parseFloat(document.getElementById('debitosSinal').value) || 0;
-            let quitacao = parseFloat(document.getElementById('quitacaoSinal').value) || 0;
-            let sinal = parseFloat(document.getElementById('valorSinal').value) || 0;
-            let total = compra - (debitos + quitacao + sinal);
-            document.getElementById('sinalValor').innerText = `R$ ${total.toFixed(2)}`;
-        }
-
-        function gerarRelatorioSaldo() {
-            let relatorio = `Pix: ${document.getElementById('pixSaldo').value}\n` +
-                            `Nome do Cliente: ${document.getElementById('clienteSaldo').value}\n` +
-                            'Nome de Terceiros: ' + document.getElementById('terceirosSaldo').value + '\n' +
-                            'Captador: ' + document.getElementById('captadorSaldo').value + '\n' +
-                            'Carro: ' + document.getElementById('carroSaldo').value + '\n' +
-                            'Placa: ' + document.getElementById('placaSaldo').value + '\n' +
-                            `Valor da COMPRA: ${document.getElementById('compraSaldo').value}\n` +
-                            `Débitos: ${document.getElementById('debitosSaldo').value}\n` +
-                            `Valor da Quitação: ${document.getElementById('quitacaoSaldo').value}\n` +                            
-                            `Valor do Saldo: ${document.getElementById('saldoValor').innerText}`;
-            document.getElementById('relatorioSaldo').value = relatorio;
         }
 
         function gerarRelatorioSinal() {
-            let relatorio = `Pix: ${document.getElementById('pixSinal').value}\n` +
-                            `Nome do Cliente: ${document.getElementById('clienteSinal').value}\n` +
-                            'Nome de Terceiros: ' + document.getElementById('terceirosSinal').value + '\n' +
-                            'Captador: ' + document.getElementById('captadorSinal').value + '\n' +
-                            'Carro: ' + document.getElementById('carroSinal').value + '\n' +
-                            'Placa: ' + document.getElementById('placaSinal').value + '\n' +
-                            `Valor da COMPRA: ${document.getElementById('compraSinal').value}\n` +
-                            `Débitos: ${document.getElementById('debitosSinal').value}\n` +
-                            `Valor da Quitação: ${document.getElementById('quitacaoSinal').value}\n` +
-                            `Valor do Sinal: ${document.getElementById('valorSinal').value}\n` +
-                            `Valor do Sinal: ${document.getElementById('sinalValor').innerText}`;
+            let relatorio = `Olá, por gentileza efetuar o **PAGAMENTO DO SINAL** no valor de **R$ ${document.getElementById('valorSinal').value}** via PIX **${document.getElementById('pixSinal').value}** em nome de **${document.getElementById('clienteSinal').value}** referente à COMPRA do veículo abaixo:\n\n` +
+                            `CAPTADOR: ${document.getElementById('captadorSinal').value}\n` +
+                            `VEÍCULO: ${document.getElementById('carroSinal').value}\n` +
+                            `Placa: ${document.getElementById('placaSinal').value}\n` +
+                            `Valor total da COMPRA: R$ ${document.getElementById('compraSinal').value}\n` +
+                            `Débitos descontados: R$ ${document.getElementById('debitosSinal').value}\n` +
+                            `Valor da Quitação: R$ ${document.getElementById('quitacaoSinal').value}\n\n` +
+                            `**PAGAMENTO DO SINAL:** R$ ${document.getElementById('valorSinal').value}`;
             document.getElementById('relatorioSinal').value = relatorio;
+        }
+
+        function gerarRelatorioSaldo() {
+            let relatorio = `Olá, por gentileza efetuar o **PAGAMENTO DO SALDO** no valor de **${document.getElementById('saldoValor').innerText}** via PIX **${document.getElementById('pixSaldo').value}** em nome de **${document.getElementById('clienteSaldo').value}** referente à COMPRA do veículo abaixo:\n\n` +
+                            `CAPTADOR: ${document.getElementById('captadorSaldo').value}\n` +
+                            `VEÍCULO: ${document.getElementById('carroSaldo').value}\n` +
+                            `Placa: ${document.getElementById('placaSaldo').value}\n` +
+                            `Valor total da COMPRA: R$ ${document.getElementById('compraSaldo').value}\n` +
+                            `Débitos descontados: R$ ${document.getElementById('debitosSaldo').value}\n` +
+                            `Valor da Quitação: R$ ${document.getElementById('quitacaoSaldo').value}\n` +
+                            `Sinal: R$ ${document.getElementById('sinalSaldo').value}\n\n` +
+                            `**PAGAMENTO DE SALDO:** ${document.getElementById('saldoValor').innerText}`;
+            document.getElementById('relatorioSaldo').value = relatorio;
         }
 
         function copiarRelatorio(id) {
             let texto = document.getElementById(id).value;
-            navigator.clipboard.writeText(texto);
-            alert("Relatório copiado!");
+            navigator.clipboard.writeText(texto).then(() => {
+                alert("Relatório copiado para a área de transferência!");
+            });
         }
     </script>
 </body>
