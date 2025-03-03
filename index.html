@@ -47,7 +47,7 @@
         <tr><td>Valor da COMPRA:</td><td><input type="number" id="compraSinal"></td></tr>
         <tr><td>Débitos:</td><td><input type="number" id="debitosSinal"></td></tr>
         <tr><td>Valor da Quitação:</td><td><input type="number" id="quitacaoSinal"></td></tr>
-        <tr><td>Laudo:</td><td><input type="number" id="laudoSinal"></td></tr>
+        <tr><td>Laudo:</td><td><input type="text" id="laudoSinal"></td></tr>
         <tr><td><b>Valor do Sinal:</b></td><td><input type="number" id="valorSinal"></td></tr>
     </table>
     <button onclick="gerarRelatorioSinal()">Gerar Relatório Sinal</button>
@@ -67,7 +67,7 @@
         <tr><td>Débitos:</td><td><input type="number" id="debitosSaldo" oninput="calcularSaldo()"></td></tr>
         <tr><td>Valor da Quitação:</td><td><input type="number" id="quitacaoSaldo" oninput="calcularSaldo()"></td></tr>
         <tr><td>Valor do Sinal:</td><td><input type="number" id="sinalSaldo" oninput="calcularSaldo()"></td></tr>
-        <tr><td>Laudo:</td><td><input type="number" id="laudoSaldo"></td></tr>
+        <tr><td>Laudo:</td><td><input type="text" id="laudoSaldo"></td></tr>
         <tr><td><b>Pagamento Total:</b></td><td><b id="saldoValor">R$ 0,00</b></td></tr>
     </table>
     <button onclick="gerarRelatorioSaldo()">Gerar Relatório Saldo</button>
