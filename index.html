@@ -10,7 +10,7 @@
             margin: 20px;
         }
         table {
-            width: 100%;
+            width: 50%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
@@ -37,36 +37,61 @@
 <body>
     <h2>Valor do Sinal</h2>
     <table>
-        <tr><td><b>Pix:</b></td><td><input type="text" id="pixSinal"></td></tr>
-        <tr><td>Banco do cliente:</b></td><td><input type="text" id="bancoSinal"></td></tr>
-        <tr><td>Nome do Cliente:</td><td><input type="text" id="clienteSinal"></td></tr>
-        <tr><td>Nome de Terceiros:</td><td><input type="text" id="terceirosSinal"></td></tr>
+        <tr>
+            <td>Pagamento para Terceiro:</td>
+            <td>
+                <label>
+                    <input type="checkbox" id="terceirosSinalSim" onchange="toggleTerceirosSinal('sim')">
+                    SIM
+                </label>
+                <label>
+                    <input type="checkbox" id="terceirosSinalNao" onchange="toggleTerceirosSinal('nao')">
+                    NÃO
+                </label>
+            </td>
+        </tr>
+        <tr><td>Nome do Cliente:</td><td><input type="text" id="clienteSinal" oninput="atualizarNomeSinal()"></td></tr>
+        <tr><td>Nome do Terceiro: </td><td><input type="text" id="nomeSinal"></td></tr>
+        <tr><td>Pix:</td><td><input type="text" id="pixSinal"></td></tr>
+        <tr><td>Banco do cliente:</td><td><input type="text" id="bancoSinal"></td></tr>
         <tr><td>Captador:</td><td><input type="text" id="captadorSinal"></td></tr>
         <tr><td>Carro:</td><td><input type="text" id="carroSinal"></td></tr>
         <tr><td>Placa:</td><td><input type="text" id="placaSinal"></td></tr>
-        <tr><td>Valor da COMPRA:</td><td><input type="number" id="compraSinal"></td></tr>
-        <tr><td>Débitos:</td><td><input type="number" id="debitosSinal"></td></tr>
-        <tr><td>Valor da Quitação:</td><td><input type="number" id="quitacaoSinal"></td></tr>
+        <tr><td>Valor da COMPRA:</td><td><input type="number" id="compraSinal" oninput="calcularSinal()"></td></tr>
+        <tr><td>Débitos:</td><td><input type="number" id="debitosSinal" oninput="calcularSinal()"></td></tr>
+        <tr><td>Valor da Quitação:</td><td><input type="number" id="quitacaoSinal" oninput="calcularSinal()"></td></tr>
         <tr><td>Laudo:</td><td><input type="text" id="laudoSinal"></td></tr>
         <tr><td><b>Valor do Sinal:</b></td><td><input type="number" id="valorSinal"></td></tr>
     </table>
     <button onclick="gerarRelatorioSinal()">Gerar Relatório Sinal</button>
     <button onclick="copiarRelatorio('relatorioSinal')">Copiar Relatório</button>
     <textarea id="relatorioSinal" readonly></textarea>
-    
+
     <h2>Pagamento Total</h2>
     <table>
-        <tr><td><b>Pix:</b></td><td><input type="text" id="pixSaldo"></td></tr>
-        <tr><td>Banco do cliente:</b></td><td><input type="text" id="bancoSaldo"></td></tr>
-        <tr><td>Nome do Cliente:</td><td><input type="text" id="clienteSaldo"></td></tr>
-        <tr><td>Nome de Terceiros:</td><td><input type="text" id="terceirosSaldo"></td></tr>
+        <tr>
+            <td>Pagamento para Terceiro:</td>
+            <td>
+                <label>
+                    <input type="checkbox" id="terceirosSaldoSim" onchange="toggleTerceirosSaldo('sim')">
+                    SIM
+                </label>
+                <label>
+                    <input type="checkbox" id="terceirosSaldoNao" onchange="toggleTerceirosSaldo('nao')">
+                    NÃO
+                </label>
+            </td>
+        </tr>
+        <tr><td>Nome do Cliente:</td><td><input type="text" id="clienteSaldo" oninput="atualizarNomeSaldo()"></td></tr>
+        <tr><td>Nome do Terceiro: </td><td><input type="text" id="nomeSaldo"></td></tr>
+        <tr><td>Pix:</td><td><input type="text" id="pixSaldo"></td></tr>
+        <tr><td>Banco do cliente:</td><td><input type="text" id="bancoSaldo"></td></tr>
         <tr><td>Captador:</td><td><input type="text" id="captadorSaldo"></td></tr>
         <tr><td>Carro:</td><td><input type="text" id="carroSaldo"></td></tr>
         <tr><td>Placa:</td><td><input type="text" id="placaSaldo"></td></tr>
         <tr><td>Valor da COMPRA:</td><td><input type="number" id="compraSaldo" oninput="calcularSaldo()"></td></tr>
         <tr><td>Débitos:</td><td><input type="number" id="debitosSaldo" oninput="calcularSaldo()"></td></tr>
         <tr><td>Valor da Quitação:</td><td><input type="number" id="quitacaoSaldo" oninput="calcularSaldo()"></td></tr>
-        <tr><td>Valor do Sinal:</td><td><input type="number" id="sinalSaldo" oninput="calcularSaldo()"></td></tr>
         <tr><td>Laudo:</td><td><input type="text" id="laudoSaldo"></td></tr>
         <tr><td><b>Pagamento Total:</b></td><td><b id="saldoValor">R$ 0,00</b></td></tr>
     </table>
@@ -75,42 +100,117 @@
     <textarea id="relatorioSaldo" readonly></textarea>
 
     <script>
+        // Função para garantir a exclusividade das checkboxes "SIM" e "NÃO"
+        function garantirExclusividadeSinal() {
+            let sim = document.getElementById('terceirosSinalSim');
+            let nao = document.getElementById('terceirosSinalNao');
+            if (sim.checked) nao.checked = false;
+            if (nao.checked) sim.checked = false;
+        }
+
+        function garantirExclusividadeSaldo() {
+            let sim = document.getElementById('terceirosSaldoSim');
+            let nao = document.getElementById('terceirosSaldoNao');
+            if (sim.checked) nao.checked = false;
+            if (nao.checked) sim.checked = false;
+        }
+
+        // Função para mostrar/esconder o nome do terceiro
+        function toggleTerceirosSinal(opcao) {
+            garantirExclusividadeSinal();
+            let nomeSinalColuna = document.getElementById('nomeSinal').parentElement; 
+            let nomeSinalInput = document.getElementById('nomeSinal');
+            if (opcao === 'sim') {
+                nomeSinalColuna.style.display = "table-row";
+                nomeSinalInput.placeholder = "Nome do Terceiro";
+                nomeSinalInput.value = '';
+            } else {
+                nomeSinalColuna.style.display = "none";
+            }
+        }
+
+        // Função para mostrar/esconder o nome do terceiro
+        function toggleTerceirosSaldo(opcao) {
+            garantirExclusividadeSaldo();
+            let nomeSaldoColuna = document.getElementById('nomeSaldo').parentElement; 
+            let nomeSaldoInput = document.getElementById('nomeSaldo');
+            if (opcao === 'sim') {
+                nomeSaldoColuna.style.display = "table-row";
+                nomeSaldoInput.placeholder = "Nome do Terceiro";
+                nomeSaldoInput.value = '';
+            } else {
+                nomeSaldoColuna.style.display = "none";
+            }
+        }
+
+        // Função para atualizar o nome do terceiro na tabela de Sinal
+        function atualizarNomeSinal() {
+            if (document.getElementById('terceirosSinalNao').checked) {
+                document.getElementById('nomeSinal').value = document.getElementById('clienteSinal').value;
+            }
+        }
+
+        // Função para atualizar o nome do terceiro na tabela de Saldo
+        function atualizarNomeSaldo() {
+            if (document.getElementById('terceirosSaldoNao').checked) {
+                document.getElementById('nomeSaldo').value = document.getElementById('clienteSaldo').value;
+            }
+        }
+
+        // Função para calcular o valor do Pagamento Total
         function calcularSaldo() {
             let compra = parseFloat(document.getElementById('compraSaldo').value) || 0;
             let debitos = parseFloat(document.getElementById('debitosSaldo').value) || 0;
             let quitacao = parseFloat(document.getElementById('quitacaoSaldo').value) || 0;
-            let sinal = parseFloat(document.getElementById('sinalSaldo').value) || 0;
-            let saldo = compra - (debitos + quitacao + sinal);
+            let saldo = compra - debitos - quitacao;
             document.getElementById('saldoValor').innerText = `R$ ${saldo.toFixed(2)}`;
         }
 
+        // Função para gerar o relatório do Sinal
         function gerarRelatorioSinal() {
-            let relatorio = `Olá, por gentileza efetuar o *PAGAMENTO DO SINAL* no valor de *R$ ${document.getElementById('valorSinal').value}* via PIX *${document.getElementById('pixSinal').value} no banco ${document.getElementById('bancoSinal').value}* em nome de *${document.getElementById('clienteSinal').value}* referente à COMPRA do veículo abaixo:\n\n` +
+            let nomePagamento = document.getElementById('terceirosSinalSim').checked ? document.getElementById('nomeSinal').value : document.getElementById('clienteSinal').value;
+            let terceirosTexto = document.getElementById('terceirosSinalSim').checked ? 
+                `\nNome do Cliente: ${document.getElementById('clienteSinal').value}\nÉ pagamento para terceiro\nNome do Terceiro: ${document.getElementById('nomeSinal').value}\n` :
+                '\nNão possui nome de terceiros.\n';
+
+            let relatorio = `${terceirosTexto}` +
+                            `\nOlá, por gentileza efetuar o *PAGAMENTO DO SINAL* no valor de *R$ ${document.getElementById('valorSinal').value},00* via PIX *${document.getElementById('pixSinal').value}* no banco ${document.getElementById('bancoSinal').value} em nome de *${nomePagamento}* referente à COMPRA do veículo abaixo:\n\n` +
                             `CAPTADOR: ${document.getElementById('captadorSinal').value}\n` +
                             `VEÍCULO: ${document.getElementById('carroSinal').value}\n` +
                             `Placa: ${document.getElementById('placaSinal').value}\n` +
-                            `Valor total da COMPRA: R$ ${document.getElementById('compraSinal').value}\n` +
-                            `Débitos descontados: R$ ${document.getElementById('debitosSinal').value}\n` +
-                            `Valor da Quitação: R$ ${document.getElementById('quitacaoSinal').value}\n\n` +
+                            `Valor total da COMPRA: R$ ${document.getElementById('compraSinal').value},00\n` +
+                            `Débitos descontados: R$ ${document.getElementById('debitosSinal').value},00\n` +
+                            `Valor da Quitação: R$ ${document.getElementById('quitacaoSinal').value},00\n\n` +
                             `Laudo: ${document.getElementById('laudoSinal').value}\n` +
-                            `*PAGAMENTO DO SINAL:* R$ ${document.getElementById('valorSinal').value}`;
+                            `*PAGAMENTO DO SINAL: R$ ${document.getElementById('valorSinal').value},00*\n` +
+                            `*Pix: ${document.getElementById('pixSinal').value}*\n`;
+
             document.getElementById('relatorioSinal').value = relatorio;
         }
 
+        // Função para gerar o relatório do Saldo
         function gerarRelatorioSaldo() {
-            let relatorio = `Olá, por gentileza efetuar o *PAGAMENTO DO SALDO* no valor de *${document.getElementById('saldoValor').innerText}* via PIX *${document.getElementById('pixSaldo').value}* em nome de *${document.getElementById('clienteSaldo').value}* referente à COMPRA do veículo abaixo:\n\n` +
+            let nomePagamento = document.getElementById('terceirosSaldoSim').checked ? document.getElementById('nomeSaldo').value : document.getElementById('clienteSaldo').value;
+            let terceirosTexto = document.getElementById('terceirosSaldoSim').checked ? 
+                `\nNome do Cliente: ${document.getElementById('clienteSaldo').value}\nÉ pagamento para terceiro\nNome do Terceiro: ${document.getElementById('nomeSaldo').value}\n` :
+                '\nNão possui nome de terceiros.\n';
+
+            let relatorio = `${terceirosTexto}` +
+                            `\nOlá, por gentileza efetuar o *PAGAMENTO TOTAL* no valor de *R$ ${document.getElementById('saldoValor').innerText}* via PIX *${document.getElementById('pixSaldo').value}* no banco ${document.getElementById('bancoSaldo').value} em nome de *${nomePagamento}* referente à COMPRA do veículo abaixo:\n\n` +
                             `CAPTADOR: ${document.getElementById('captadorSaldo').value}\n` +
                             `VEÍCULO: ${document.getElementById('carroSaldo').value}\n` +
                             `Placa: ${document.getElementById('placaSaldo').value}\n` +
-                            `Valor total da COMPRA: R$ ${document.getElementById('compraSaldo').value}\n` +
-                            `Débitos descontados: R$ ${document.getElementById('debitosSaldo').value}\n` +
-                            `Valor da Quitação: R$ ${document.getElementById('quitacaoSaldo').value}\n` +
-                            `Sinal: R$ ${document.getElementById('sinalSaldo').value}\n\n` +
+                            `Valor total da COMPRA: R$ ${document.getElementById('compraSaldo').value},00\n` +
+                            `Débitos descontados: R$ ${document.getElementById('debitosSaldo').value},00\n` +
+                            `Valor da Quitação: R$ ${document.getElementById('quitacaoSaldo').value},00\n\n` +
                             `Laudo: ${document.getElementById('laudoSaldo').value}\n` +
-                            `*PAGAMENTO DE SALDO:* ${document.getElementById('saldoValor').innerText}`;
+                            `*PAGAMENTO TOTAL: R$ ${document.getElementById('saldoValor').innerText}*\n` +
+                            `*Pix: ${document.getElementById('pixSaldo').value}*\n`;
+
             document.getElementById('relatorioSaldo').value = relatorio;
         }
 
+        // Função para copiar o relatório para a área de transferência
         function copiarRelatorio(id) {
             let texto = document.getElementById(id).value;
             navigator.clipboard.writeText(texto).then(() => {
