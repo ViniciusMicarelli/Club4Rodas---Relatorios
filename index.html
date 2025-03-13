@@ -88,15 +88,15 @@
         </tr>
         <tr>
             <td>Valor da COMPRA:</td>
-            <td><input type="number" id="compraSinal" oninput="calcularSinal()"></td>
+            <td><input type="number" step="0.01" id="compraSinal" oninput="calcularSinal()"></td>
         </tr>
         <tr>
             <td>Débitos:</td>
-            <td><input type="number" id="debitosSinal" oninput="calcularSinal()"></td>
+            <td><input type="number" step="0.01" id="debitosSinal" oninput="calcularSinal()"></td>
         </tr>
         <tr>
             <td>Valor da Quitação:</td>
-            <td><input type="number" id="quitacaoSinal" oninput="calcularSinal()"></td>
+            <td><input type="number" step="0.01" id="quitacaoSinal" oninput="calcularSinal()"></td>
         </tr>
         <tr>
             <td>Laudo:</td>
@@ -104,7 +104,7 @@
         </tr>
         <tr>
             <td><b>Valor do Sinal:</b></td>
-            <td><input type="number" id="valorSinal"></td>
+            <td><input type="number" step="0.01" id="valorSinal"></td>
         </tr>
     </table>
     <button onclick="gerarRelatorioSinal()">Gerar Relatório Sinal</button>
@@ -156,19 +156,19 @@
         </tr>
         <tr>
             <td>Valor da COMPRA:</td>
-            <td><input type="number" id="compraSaldo" oninput="calcularSaldo()"></td>
+            <td><input type="number" step="0.01" id="compraSaldo" oninput="calcularSaldo()"></td>
         </tr>
         <tr>
             <td>Débitos:</td>
-            <td><input type="number" id="debitosSaldo" oninput="calcularSaldo()"></td>
+            <td><input type="number" step="0.01" id="debitosSaldo" oninput="calcularSaldo()"></td>
         </tr>
         <tr>
             <td>Valor da Quitação:</td>
-            <td><input type="number" id="quitacaoSaldo" oninput="calcularSaldo()"></td>
+            <td><input type="number" step="0.01" id="quitacaoSaldo" oninput="calcularSaldo()"></td>
         </tr>
         <tr>
             <td><b>Sinal pago:</b></td>
-            <td><input type="number" id="valorSaldo" oninput="calcularSaldo()"></td>
+            <td><input type="number" step="0.01" id="valorSaldo" oninput="calcularSaldo()"></td>
         </tr>
         <tr>
             <td>Laudo:</td>
@@ -248,7 +248,7 @@
             let quitacao = parseFloat(document.getElementById('quitacaoSaldo').value) || 0;
             let sinal = parseFloat(document.getElementById('valorSaldo').value) || 0;
             let saldo = compra - debitos - quitacao - sinal;
-            document.getElementById('saldoValor').innerText = `R$ ${saldo.toFixed(2)}`;
+            document.getElementById('saldoValor').innerText = saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
         // Função para gerar o relatório do Sinal
@@ -259,15 +259,15 @@
                 '\nNão possui nome de terceiros.\n';
 
             let relatorio = `${terceirosTexto}` +
-                `\nOlá, por gentileza efetuar o *PAGAMENTO DO SINAL* no valor de *R$ ${document.getElementById('valorSinal').value},00* via PIX *${document.getElementById('pixSinal').value}* no banco ${document.getElementById('bancoSinal').value} em nome de *${nomePagamento}* referente à COMPRA do veículo abaixo:\n\n` +
+                `\nOlá, por gentileza efetuar o *PAGAMENTO DO SINAL* no valor de *${parseFloat(document.getElementById('valorSinal').value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}* via PIX *${document.getElementById('pixSinal').value}* no banco ${document.getElementById('bancoSinal').value} em nome de *${nomePagamento}* referente à COMPRA do veículo abaixo:\n\n` +
                 `CAPTADOR: ${document.getElementById('captadorSinal').value}\n` +
                 `VEÍCULO: ${document.getElementById('carroSinal').value}\n` +
                 `Placa: ${document.getElementById('placaSinal').value}\n` +
-                `Valor total da COMPRA: R$ ${document.getElementById('compraSinal').value},00\n` +
-                `Débitos descontados: R$ ${document.getElementById('debitosSinal').value},00\n` +
-                `Valor da Quitação: R$ ${document.getElementById('quitacaoSinal').value},00\n\n` +
+                `Valor total da COMPRA: ${parseFloat(document.getElementById('compraSinal').value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n` +
+                `Débitos descontados: ${parseFloat(document.getElementById('debitosSinal').value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n` +
+                `Valor da Quitação: ${parseFloat(document.getElementById('quitacaoSinal').value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n\n` +
                 `Laudo: ${document.getElementById('laudoSinal').value}\n` +
-                `*PAGAMENTO DO SINAL: R$ ${document.getElementById('valorSinal').value},00*\n` +
+                `*PAGAMENTO DO SINAL: ${parseFloat(document.getElementById('valorSinal').value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}*\n` +
                 `*Pix: ${document.getElementById('pixSinal').value}*\n`;
 
             document.getElementById('relatorioSinal').value = relatorio;
@@ -281,16 +281,16 @@
                 '\nNão possui nome de terceiros.\n';
 
             let relatorio = `${terceirosTexto}` +
-                `\nOlá, por gentileza efetuar o *PAGAMENTO TOTAL* no valor de *R$ ${document.getElementById('saldoValor').innerText}* via PIX *${document.getElementById('pixSaldo').value}* no banco ${document.getElementById('bancoSaldo').value} em nome de *${nomePagamento}* referente à COMPRA do veículo abaixo:\n\n` +
+                `\nOlá, por gentileza efetuar o *PAGAMENTO TOTAL* no valor de *${document.getElementById('saldoValor').innerText}* via PIX *${document.getElementById('pixSaldo').value}* no banco ${document.getElementById('bancoSaldo').value} em nome de *${nomePagamento}* referente à COMPRA do veículo abaixo:\n\n` +
                 `CAPTADOR: ${document.getElementById('captadorSaldo').value}\n` +
                 `VEÍCULO: ${document.getElementById('carroSaldo').value}\n` +
                 `Placa: ${document.getElementById('placaSaldo').value}\n` +
-                `Valor total da COMPRA: R$ ${document.getElementById('compraSaldo').value},00\n` +
-                `Débitos descontados: R$ ${document.getElementById('debitosSaldo').value},00\n` +
-                `Valor da Quitação: R$ ${document.getElementById('quitacaoSaldo').value},00\n\n` +
-                `Sinal pago: R$ ${document.getElementById('valorSaldo').value},00\n\n` +
+                `Valor total da COMPRA: ${parseFloat(document.getElementById('compraSaldo').value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n` +
+                `Débitos descontados: ${parseFloat(document.getElementById('debitosSaldo').value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n` +
+                `Valor da Quitação: ${parseFloat(document.getElementById('quitacaoSaldo').value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n\n` +
+                `Sinal pago: ${parseFloat(document.getElementById('valorSaldo').value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n\n` +
                 `Laudo: ${document.getElementById('laudoSaldo').value}\n` +
-                `*PAGAMENTO TOTAL: R$ ${document.getElementById('saldoValor').innerText}*\n` +
+                `*PAGAMENTO TOTAL: ${document.getElementById('saldoValor').innerText}*\n` +
                 `*Pix: ${document.getElementById('pixSaldo').value}*\n`;
 
             document.getElementById('relatorioSaldo').value = relatorio;
